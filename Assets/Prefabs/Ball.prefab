@@ -47,9 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b400ef820cbe5b540b19578819efc163, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 2
+  OnDeathEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  _speed: 4
   _rigidbody2D: {fileID: 4822324618850717771}
-  _velocity: {x: 1, y: 0}
+  _velocity: {x: 1, y: 0.2}
 --- !u!212 &5223436596675489114
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -113,13 +116,13 @@ Rigidbody2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8813712932422828942}
   m_BodyType: 0
-  m_Simulated: 0
+  m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.2
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -129,7 +132,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!58 &6128753605244593387
 CircleCollider2D:

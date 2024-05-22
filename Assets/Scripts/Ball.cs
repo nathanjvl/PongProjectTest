@@ -5,10 +5,7 @@ using UnityEngine.Events;
 
 public class Ball : MonoBehaviour
 {
-    public UnityEvent<Vector2> OnDeath;
-
-    [SerializeField] private string _deathTag = "Death";
-    [SerializeField] private string _paddleTag = "Paddle";
+    public UnityEvent<Vector2> OnDeathEvent;
 
     [Header("Ball Components")]
     [SerializeField] private float _speed = 2f;
@@ -24,7 +21,6 @@ public class Ball : MonoBehaviour
     public void SetVelocity(Vector2 v)
     {
         _velocity = v;
-        _velocity.Normalize();
     }
 
 
@@ -43,12 +39,12 @@ public class Ball : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag(_deathTag))
+        if (collision.gameObject.CompareTag("Death"))
         {
             Debug.Log("Collided with end!");
             SetVelocity(Vector2.zero);
             OnDie();
-        } else if (collision.gameObject.CompareTag(_paddleTag))
+        } else if (collision.gameObject.CompareTag("Paddle"))
         {
             _velocity.x = -_velocity.x;
 
@@ -67,7 +63,7 @@ public class Ball : MonoBehaviour
 
     private void OnDie()
     {
-        OnDeath.Invoke(new Vector2(transform.position.x, transform.position.y));
+        OnDeathEvent.Invoke(new Vector2(transform.position.x, transform.position.y));
         Destroy(gameObject);
     }
 }

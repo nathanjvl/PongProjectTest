@@ -22,6 +22,8 @@ public class Paddle : MonoBehaviour
     private float _currentVelocity = 0f;
     private Vector2 _velocity = Vector2.zero;
 
+    private bool _touchingWall = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -89,6 +91,21 @@ public class Paddle : MonoBehaviour
 
         _rigidbody2D.velocity = v;
 
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            _touchingWall = true;
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            _touchingWall = false;
+        }
     }
 
     public float GetWeightedSpeed()
