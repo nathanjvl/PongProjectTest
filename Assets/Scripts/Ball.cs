@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.VFX;
 
 public class Ball : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class Ball : MonoBehaviour
     [SerializeField] private float _speed = 2f;
     [SerializeField] private Rigidbody2D _rigidbody2D;
     [SerializeField] private Vector2 _velocity = Vector2.zero;
+    [SerializeField] private VisualEffect _ballVFX;
+
+    private bool _isDying = false;
 
     // Start is called before the first frame update
     void Start()
@@ -39,11 +43,13 @@ public class Ball : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
+        _ballVFX?.SendEvent("OnHit");
+
         if (collision.gameObject.CompareTag("Death"))
         {
             Debug.Log("Collided with end!");
             SetVelocity(Vector2.zero);
-            OnDie();
+            if (!_isDying) OnDie();
         } else if (collision.gameObject.CompareTag("Paddle"))
         {
             _velocity.x = -_velocity.x;
@@ -63,7 +69,9 @@ public class Ball : MonoBehaviour
 
     private void OnDie()
     {
+        _isDying = true;
         OnDeathEvent.Invoke(new Vector2(transform.position.x, transform.position.y));
-        Destroy(gameObject);
+        _ballVFX.SendEvent("OnDie");
+        Destroy(gameObject, 2f);
     }
 }

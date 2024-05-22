@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text _leftPointText;
     [SerializeField] private TMP_Text _rightPointText;
     [SerializeField] private GameObject _startGameMenu;
+    [SerializeField] private GameObject _pauseMenu;
 
     [Header("Start Up Customization")]
     [SerializeField] private float _spawnCenterVariance = 3f;
@@ -26,26 +28,51 @@ public class GameManager : MonoBehaviour
     private bool _roundActive = false;
     private bool _gameStarted = false;
 
+    private bool _paused = false;
+
     // Start is called before the first frame update
     void Start()
     {
         if (_pointsToWin < 1) _pointsToWin = 1;  // catch oddcases
+        _startGameMenu.SetActive(true);
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if (!_roundActive && _gameStarted)
         {
 
             StartCoroutine(StartRound());
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (_paused)
+            {
+                ResumeGame();
+               
+            } else
+            {
+                OnPause();
+            }
+        }
+
+        
     }
 
+
+    #region Round Management
     // called to start a new game of pong
     public void StartNewGame()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        Time.timeScale = 1f;
         _startGameMenu?.SetActive(false);
+        _pauseMenu.SetActive(false);
 
         if (Random.Range(0f, 1f) > 0.5f)
         {
@@ -90,7 +117,7 @@ public class GameManager : MonoBehaviour
             ballScript.OnDeathEvent.AddListener(OnBallDeath);
         }
     }
-
+    
     public void OnBallDeath(Vector2 pos)
     {
         if (_environmentCenter.position.x - pos.x < 0)
@@ -115,6 +142,7 @@ public class GameManager : MonoBehaviour
         _gameStarted = false;
         _startGameMenu?.SetActive(true);
     }
+    #endregion
 
     #region Point Adjustment
     // sets the point values
@@ -140,6 +168,38 @@ public class GameManager : MonoBehaviour
 
         SetPoints(_pointsRight, _pointsLeft);
     }
+    #endregion
+
+    #region Pause and Quit
+    public void OnPause()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        _pauseMenu.SetActive(true);
+        Time.timeScale = 0f;
+        _paused = true;
+    }
+
+    public void ResumeGame()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        _pauseMenu.SetActive(false);
+        Time.timeScale = 1f;
+        _paused = false;
+    }
+
+    public void Return()
+    {
+        SceneManager.LoadScene("Main");
+    }
+    
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     #endregion
 
 }
