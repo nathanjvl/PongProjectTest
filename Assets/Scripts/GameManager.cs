@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
             StartCoroutine(StartRound());
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (_gameStarted && Input.GetKeyDown(KeyCode.Escape))
         {
             if (_paused)
             {
@@ -58,8 +58,6 @@ public class GameManager : MonoBehaviour
                 OnPause();
             }
         }
-
-        
     }
 
 
@@ -183,8 +181,12 @@ public class GameManager : MonoBehaviour
 
     public void ResumeGame()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        if (_gameStarted) // extra precaution to ensure that the curse isn't invisible in main menu
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
         _pauseMenu.SetActive(false);
         Time.timeScale = 1f;
         _paused = false;
